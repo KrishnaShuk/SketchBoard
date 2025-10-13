@@ -1,4 +1,7 @@
 import express from "express";
+import jwt from "jsonwebtoken"
+import { JWT_SECRET } from "./consfig.js";
+import { middleware } from "./middleware.js";
 
 const app = express();
 
@@ -7,10 +10,17 @@ app.get("/signup", (req, res) => {
 })
 
 app.get("/signin", (req, res) => {
-   res.send("hello");
+   const userId = 1;
+   const token = jwt.sign({
+      userId
+   }, JWT_SECRET)
+
+   res.json({
+      token
+   })
 })
 
-app.get("/create-room", (req, res) => {
+app.get("/room", middleware, (req, res) => {
    res.send("hello");
 })
 
