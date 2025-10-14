@@ -6,7 +6,7 @@ interface JwtPayload {
   userId: string
 }
 
-export function middleware(req: Request, res: Response, next: NextFunction){
+export function  middleware(req: Request, res: Response, next: NextFunction){
 
     const token = req.headers["authorization"]  ?? "";
 
