@@ -29,6 +29,7 @@ export function ChatRoomClient({
 
             }
          }
+
     }, [socket, loading, id])
 
     return <div>
