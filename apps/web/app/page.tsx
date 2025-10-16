@@ -1,31 +1,31 @@
 "use client"
 
-import TextInput from "@repo/ui/text-input";
+import { useState } from 'react';
+import styles from "./page.module.css";
 import { useRouter } from "next/navigation";
 
 
 export default function Home() {
+  const [roomId, setRoomId] = useState("");
   const router = useRouter();
+
   return (
     <div style={{
-      height: "100vh",
-      width: "100vw",
-      background: "black",
       display: "flex",
       justifyContent: "center",
-      justifyItems:"center"
+      alignItems:"center",
+      height:"100vh",
+      width:"100vw"
     }}>
-      <div style={{
-        display: "flex",
-        justifyContent: "center",
-        justifyItems:"center",
-        flexDirection: "column"
-      }}>
-        <TextInput size="big" placeholder="hello"></TextInput>
-        <button onClick={() => {
-          router.push("/chat/123")
-        }}>Join Room</button>
-      </div>
+      <input style={{
+        padding:10
+      }} value={roomId} onChange={(e) => {
+        setRoomId(e.target.value)
+      }} type="text" placeholder="Room id"></input>
+
+      <button style={{ padding: 10}} onClick={() => {
+        router.push(`/room/${roomId}`);
+      }}>Join Room</button>
     </div>
 
   );

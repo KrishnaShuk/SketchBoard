@@ -107,12 +107,40 @@ app.get("/room", middleware, async (req, res) => {
          message: "Room already exists"
       })
    }
-
-
-   
-
 })
 
+app.get("/chats/:roomId", (req,res) => {
+   const roomId = Number(req.params.roomId);
+
+   const messages = prismaClient.chat.findMany({
+      where:{
+         roomId: roomId
+      },
+      orderBy: {
+         id: "desc"
+      },
+      take: 50
+
+   }) 
+
+   res.json({
+      messages
+   })
+})
+
+app.get("/chats/:slug", (req,res) => {
+   const slug = req.params.slug;
+
+   const room = prismaClient.room.findFirst({
+      where:{
+         slug
+      }
+   }) 
+
+   res.json({
+      room
+   })
+})
 
 app.listen(3001, () => {
   console.log('Server listening on port 3001');
