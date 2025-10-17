@@ -11,22 +11,21 @@ app.use(express.json());
 const prismaClient = new PrismaClient();
 
 app.get("/signup", async (req, res) => {
-   const parsedData = CreateUserSchema.safeParse(req.body);
-   if (!parsedData.success) {
-      return res.json({
-         message: "Incorrect inputs"
-      })
-      return;
-   }
+  const parsedData = CreateUserSchema.safeParse(req.body);
+  if( !parsedData.success) {
+   return res.json({
+      message: "User already exist"
+   })
+  }
 
    try {
       const user = await prismaClient.user.create({
-      data: {
+       data: {
          email: parsedData.data?.username,
          password: parsedData.data.password,
-         name: parsedData.data.name,
-      }
-   })
+         name: parsedData.data.name
+       }  
+      })
 
    res.json({
       userId: user.id
@@ -50,22 +49,23 @@ app.get("/signin", async (req, res) => {
 
    const user = await prismaClient.user.findFirst({
       where:{
-         email: parsedData.data.username,
+         name: parsedData.data.username,
          password: parsedData.data.password
       }
    })
 
+
    if(!user){
-      res.status(403). json({
+      res.status(403).json({
          "message": "User doesn't exist"
       })
       return;
    }
 
-   const userId = user?.id ;
+   const userId = user.id;
    const token = jwt.sign({
       userId
-   }, JWT_SECRET)
+   }, JWT_SECRET);
 
    res.json({
       token
@@ -110,28 +110,27 @@ app.get("/room", middleware, async (req, res) => {
 })
 
 app.get("/chats/:roomId", async (req,res) => {
- try {
-        const roomId = Number(req.params.roomId);
-        console.log(req.params.roomId);
-        const messages = await prismaClient.chat.findMany({
-            where: {
-                roomId: roomId
-            },
-            orderBy: {
-                id: "desc"
-            },
-            take: 50
-        });
+try{
+   const roomId = Number(req.params.roomId);
+   const message = await prismaClient.chat.findMany({
+      where: {
+         roomId: roomId
+      },
+      orderBy:{
+         id : "desc"
+      },
+      take: 50
+   })
 
-        res.json({
-            messages
-        })
-    } catch(e) {
-        console.log(e);
-        res.json({
-            messages: []
-        })
-    }
+   res.json({
+      message
+   })
+} catch(e){
+   console.log(e);
+   res.json({
+      message: []
+   })
+}
     
 })
 
@@ -141,8 +140,7 @@ app.get("/room/:slug", async (req, res) => {
         where: {
          slug
       }
-   }) 
-
+   })
    res.json({
       room
    })
