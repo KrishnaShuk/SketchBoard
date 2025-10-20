@@ -1,27 +1,26 @@
-import { type JSX } from "react";
+import * as React from "react";
 
+/**
+ * A reusable Card component to wrap content sections.
+ * It provides a consistent styled container with a title.
+ */
 export function Card({
-  className,
   title,
   children,
-  href,
+  className,
 }: {
-  className?: string;
   title: string;
   children: React.ReactNode;
-  href: string;
+  className?: string;
 }): JSX.Element {
   return (
-    <a
-      className={className}
-      href={`${href}?utm_source=create-turbo&utm_medium=basic&utm_campaign=create-turbo"`}
-      rel="noopener noreferrer"
-      target="_blank"
+    <div
+      className={`w-full max-w-md p-6 sm:p-8 bg-white border border-gray-200 rounded-xl shadow-md ${className}`}
     >
-      <h2>
-        {title} <span>-&gt;</span>
-      </h2>
-      <p>{children}</p>
-    </a>
+      <h1 className="text-2xl font-bold text-center text-gray-900 mb-6">
+        {title}
+      </h1>
+      <div>{children}</div>
+    </div>
   );
 }
