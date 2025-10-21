@@ -4,9 +4,12 @@ import { JWT_SECRET } from "@repo/backend-common/config";
 import { middleware } from "./middleware.js";
 import { CreateRoomSchema, CreateUserSchema, SigninSchema } from "@repo/common/types";
 import { PrismaClient } from "@prisma/client";
+import cors from 'cors';
 
 const app = express();
 app.use(express.json());
+
+app.use(cors());
 
 const prismaClient = new PrismaClient();
 
@@ -31,6 +34,7 @@ app.get("/signup", async (req, res) => {
       userId: user.id
    })
    } catch(e) {
+      console.log(e);
       res.status(411).json({
          message:"USer already exists"
       })
@@ -146,6 +150,6 @@ app.get("/room/:slug", async (req, res) => {
    })
 })
 
-app.listen(3002, () => {
-  console.log('Server listening on port 3002');
+app.listen(3005, () => {
+  console.log('Server listening on port 3005');
 });
