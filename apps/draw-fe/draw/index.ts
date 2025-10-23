@@ -24,19 +24,18 @@ export async function initDraw(
   const ctx = canvas.getContext("2d");
   if (!ctx) return;
 
-  // 1️⃣ Fetch existing shapes first
+
   const existingShapes: Shape[] = await getExistingShapes(roomId);
 
-  // 2️⃣ Draw background and existing shapes
+
   clearCanvas(existingShapes, canvas, ctx);
 
-  // 3️⃣ Listen for incoming shapes from WebSocket
   socket.onmessage = (event) => {
     const message = JSON.parse(event.data);
     if (message.type === "chat") {
       try {
         const parsed = JSON.parse(message.message);
-        const shape = parsed.shape || parsed; // handle both cases
+        const shape = parsed.shape || parsed; 
         if (shape?.type) {
           existingShapes.push(shape);
           clearCanvas(existingShapes, canvas, ctx);
@@ -47,12 +46,12 @@ export async function initDraw(
     }
   };
 
-  // 4️⃣ Draw state
+
   let clicked = false;
   let startX = 0;
   let startY = 0;
 
-  // 5️⃣ Mouse event handlers
+
   canvas.addEventListener("mousedown", (e) => {
     const rect = canvas.getBoundingClientRect();
     clicked = true;
@@ -101,7 +100,7 @@ export async function initDraw(
   });
 }
 
-// 🧹 Clears and re-renders all shapes
+
 function clearCanvas(
   existingShapes: Shape[],
   canvas: HTMLCanvasElement,
@@ -124,7 +123,7 @@ function clearCanvas(
   }
 }
 
-// 🧠 Fetch previous shapes from backend
+
 async function getExistingShapes(roomId: string) {
   const res = await axios.get(`${HTTP_BACKEND}/chats/${roomId}`);
   const messages = res.data.message || [];
