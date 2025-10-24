@@ -35,7 +35,9 @@ function Toolbar({selectedTool, setSelectedTool} : {
     selectedTool: Shape,
     setSelectedTool: (s: Shape) => void
 }) {
-    return <div style={{
+    return (
+
+    <div style={{
             position: "fixed",
             top: 10,
             left: 10
@@ -52,6 +54,8 @@ function Toolbar({selectedTool, setSelectedTool} : {
             <IconButton onClick={() => {
                 setSelectedTool("circle")
             }} activated={selectedTool === "circle"} icon={<Circle />}></IconButton>
+            
             </div>
         </div>
+    )
 }
