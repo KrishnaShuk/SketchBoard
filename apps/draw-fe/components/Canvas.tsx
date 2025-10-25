@@ -5,6 +5,9 @@ import { Circle, Pencil, RectangleHorizontalIcon } from "lucide-react";
 
 type Shape = "circle" | "rect" | "pencil";
 
+
+
+
 export function Canvas({
     roomId,
     socket
@@ -30,6 +33,11 @@ export function Canvas({
         
     </div>
 }
+
+
+
+
+
 
 function Toolbar({selectedTool, setSelectedTool} : {
     selectedTool: Shape,
