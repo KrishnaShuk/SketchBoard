@@ -14,7 +14,14 @@ type Shape =
       centerX: number;
       centerY: number;
       radius: number;
-    };
+    }
+  | {
+     type: "pencil";
+     startX: number;
+     startY: number;
+     endX: number;
+     endY: number;
+    }
 
 export async function initDraw(
   canvas: HTMLCanvasElement,
@@ -66,15 +73,33 @@ export async function initDraw(
     const width = e.clientX - rect.left - startX;
     const height = e.clientY - rect.top - startY;
 
-    const shape: Shape = {
+    //@ts-ignore
+    const selectedTool = window.selectedTool;
+    let shape: Shape | null = null;
+    if(selectedTool === "rect"){
+      shape = {
       type: "rect",
       x: startX,
       y: startY,
       width,
       height,
-    };
+     }
+    } else if (selectedTool === "circle") {
+      const radius = Math.max(width, height) / 2
+      shape = {
+      type: "circle",
+      radius: radius,
+      centerX: startX + radius,
+      centerY: startY + radius,
+     }
+    }
 
-    existingShapes.push(shape);
+    if(!shape){
+      return;
+    }
+    
+
+
     clearCanvas(existingShapes, canvas, ctx);
 
     socket.send(
@@ -95,7 +120,20 @@ export async function initDraw(
       clearCanvas(existingShapes, canvas, ctx);
       ctx.lineWidth = 2;
       ctx.strokeStyle = "rgba(255,255,255)";
-      ctx.strokeRect(startX, startY, width, height);
+      //@ts-ignore
+      const selectedTool = window.selectedTool;
+      if(selectedTool === "rect"){
+          ctx.strokeRect(startX, startY, width, height);
+      } else if (selectedTool === "circle"){
+        const radius = Math.max(width, height) / 2;
+        const centerX = startX + radius;
+        const centerY = startY + radius;
+        ctx.beginPath();
+        ctx.arc(centerX, centerY, radius, 0, Math.PI * 2);
+        ctx.stroke();
+        ctx.closePath();
+      }
+     
     }
   });
 }
@@ -119,6 +157,7 @@ function clearCanvas(
       ctx.beginPath();
       ctx.arc(shape.centerX, shape.centerY, shape.radius, 0, 2 * Math.PI);
       ctx.stroke();
+      ctx.closePath();
     }
   }
 }
