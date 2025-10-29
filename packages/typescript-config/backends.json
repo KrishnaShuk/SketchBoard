@@ -3,6 +3,7 @@
     "module": "nodenext",
     "target": "esnext",
     "types": [],
+    "composite": true,
     "sourceMap": true,
     "declaration": true,
     "declarationMap": true,

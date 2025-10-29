@@ -3,26 +3,56 @@
 import { useState } from "react";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
-
-// The only imports needed are your shared UI components and an icon.
+import { HTTP_BACKEND } from "@/config"; 
 import { Button } from "@repo/ui/button";
 import { Input } from "@repo/ui/input";
-import { Label } from "@repo/ui/Label"
+import { Label } from "@repo/ui/Label";
 
 export function AuthPage({ isSignin }: { isSignin: boolean }) {
+  
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  
+
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
-    console.log("Submitting:", { email, password });
-    await new Promise((resolve) => setTimeout(resolve, 1500));
-    setIsLoading(false);
+    setError(null); 
+
+    
+    const endpoint = isSignin ? "/signin" : "/signup";
+    const body = isSignin 
+      ? { username: email, password }
+      : { username: email, password, name };
+
+    console.log("FRONTEND: Preparing to send this body:", body);
+
+    try {
+      const response = await fetch(`${HTTP_BACKEND}${endpoint}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body),
+        credentials: "include",
+      });
+
+      if (response.ok) {
+        window.location.href = "/dashboard"; 
+      } else {
+        const errorData = await response.json();
+        setError(errorData.message || "An error occurred. Please try again.");
+      }
+    } catch (err) {
+      setError("Failed to connect to the server. Please check your connection.");
+      console.error(err);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
-  // Dynamic text content
   const title = isSignin ? "Welcome Back" : "Create Your Account";
   const description = isSignin 
     ? "Enter your credentials to access your whiteboard."
@@ -36,8 +66,8 @@ export function AuthPage({ isSignin }: { isSignin: boolean }) {
   const linkHref = isSignin ? "/signup" : "/signin";
 
   return (
-    // Container with background effects from the landing page
     <div className="relative min-h-screen w-screen flex justify-center items-center bg-background overflow-hidden p-4">
+      {/* Background effects */}
       <div className="absolute inset-0 bg-gradient-radial from-background to-transparent opacity-40" />
       <div className="absolute -top-1/4 -left-20 w-96 h-96 bg-primary/20 rounded-full blur-3xl animate-float" />
       <div className="absolute -bottom-1/4 -right-20 w-96 h-96 bg-accent/20 rounded-full blur-3xl animate-float" style={{ animationDelay: '2s' }} />
@@ -49,8 +79,24 @@ export function AuthPage({ isSignin }: { isSignin: boolean }) {
           <p className="text-muted-foreground">{description}</p>
         </div>
 
-        {/* The original form, but now beautifully styled */}
         <form onSubmit={handleSubmit} className="space-y-6">
+          {/* Conditionally render the "Name" field only for the signup form */}
+          {!isSignin && (
+            <div className="space-y-2">
+              <Label htmlFor="name" className="font-medium text-muted-foreground">Name</Label>
+              <Input
+                id="name"
+                type="text"
+                placeholder="Your Name"
+                required
+                disabled={isLoading}
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                className="py-3 bg-background/50 border-border focus:border-primary"
+              />
+            </div>
+          )}
+
           <div className="space-y-2">
             <Label htmlFor="email" className="font-medium text-muted-foreground">Email</Label>
             <Input
@@ -59,10 +105,12 @@ export function AuthPage({ isSignin }: { isSignin: boolean }) {
               placeholder="you@example.com"
               required
               disabled={isLoading}
-              // Classes to make the input match the landing page aesthetic
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               className="py-3 bg-background/50 border-border focus:border-primary"
             />
           </div>
+
           <div className="space-y-2">
             <Label htmlFor="password" className="font-medium text-muted-foreground">Password</Label>
             <Input
@@ -71,17 +119,23 @@ export function AuthPage({ isSignin }: { isSignin: boolean }) {
               placeholder="••••••••"
               required
               disabled={isLoading}
-              // Classes to make the input match the landing page aesthetic
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
               className="py-3 bg-background/50 border-border focus:border-primary"
             />
           </div>
+
+          {/* Display error message if it exists */}
+          {error && (
+            <p className="text-sm text-center text-amber-500">{error}</p>
+          )}
+
           <Button type="submit" isLoading={isLoading} className="w-full group bg-gradient-hero text-lg py-3">
             {buttonText}
             <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
           </Button>
         </form>
 
-        {/* Link to switch between Sign In / Sign Up */}
         <div className="text-center text-sm text-muted-foreground">
           {linkText}{" "}
           <Link href={linkHref} className="font-semibold text-primary hover:underline underline-offset-4">

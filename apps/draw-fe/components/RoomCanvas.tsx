@@ -1,33 +1,48 @@
 "use client"
 
-import { WS_SERVER } from "@/config";
-import { useEffect, useRef, useState } from "react";
+import { WS_SERVER, HTTP_BACKEND } from "@/config"; 
+import { useEffect, useState } from "react";
 import { Canvas } from "./Canvas";
 
-export function RoomCanvas({roomId}: {roomId: string}) {
-     const canvasRef = useRef<HTMLCanvasElement>(null);
-     const [socket, setSocket] = useState<WebSocket | null>(null);
+export function RoomCanvas({ roomId }: { roomId: string }) {
+  const [socket, setSocket] = useState<WebSocket | null>(null);
 
-     useEffect(() => {
-        const ws = new WebSocket(`${WS_SERVER}?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIxMDU3OWIyMC02Y2ZjLTRlYjQtYTZjNS1kYTY0Y2Q2ZDUxNTIiLCJpYXQiOjE3NjEwMzY4MzR9.1Ul0dqavPc5SJNFiacSwQNicA9HDzD5Brqr4itjui3Y`
-);
-        ws.onopen = () => {
-            setSocket(ws);
-            ws.send(JSON.stringify({
-                type: "join_room",
-                roomId
-            }))
+  useEffect(() => {
+    const connect = async () => {
+      try {
+        const response = await fetch(`${HTTP_BACKEND}/ws/token`, {
+          method: 'POST',
+          credentials: 'include', 
+        });
+
+        if (!response.ok) {
+          throw new Error("Failed to authenticate for WebSocket");
         }
-     }, [])
 
-    if(!socket) {
-        return <div>
-            Connecting to server...
-        </div>
-    }
+        const { wsToken } = await response.json();
 
+        const ws = new WebSocket(`${WS_SERVER}?token=${wsToken}`);
 
-    return <div>
-        <Canvas roomId={roomId} socket={socket}/>
-    </div>
+        ws.onopen = () => {
+          setSocket(ws);
+          ws.send(JSON.stringify({
+            type: "join_room",
+            roomId
+          }));
+        };
+
+      } catch (error) {
+        console.error("WebSocket connection failed:", error);
+      }
+    };
+
+    connect();
+
+  }, [roomId]);
+
+  if (!socket) {
+    return <div>Connecting to whiteboard...</div>;
+  }
+
+  return <Canvas roomId={roomId} socket={socket} />;
 }
