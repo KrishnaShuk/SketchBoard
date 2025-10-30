@@ -62,7 +62,7 @@ app.post("/signin", async (req, res) => {
 
   const user = await prismaClient.user.findFirst({
     where: {
-      name: username
+      email: username
     }
   });
 
