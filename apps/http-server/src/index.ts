@@ -67,13 +67,13 @@ app.post("/signin", async (req, res) => {
   });
 
   if (!user) {
-    return res.status(403).json({ "message": "Invalid credentials" });
+    return res.status(403).json({ "message": "Invalid user" });
   }
   
   const isPasswordMatch = await bcrypt.compare(password, user.password);
 
   if (!isPasswordMatch) {
-    return res.status(403).json({ "message": "Invalid credentials" });
+    return res.status(403).json({ "message": "Invalid password" });
   }
 
   const userId = user.id;
@@ -87,6 +87,18 @@ app.post("/signin", async (req, res) => {
   });
 
   res.status(200).json({ message: "Sign in successful" });
+});
+
+app.post("/api/logout", (req, res) => {
+  
+  res.cookie('authToken', '', {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'strict',
+    maxAge: 0 
+  });
+
+  res.status(200).json({ message: "Logged out successfully" });
 });
 
 app.post("/room", middleware, async (req, res) => {
@@ -144,7 +156,7 @@ app.get("/chats/:roomId", middleware, async (req, res) => {
   }
 });
 
-app.get("/room/:slug", middleware, async (req, res) => { // Added middleware for security
+app.get("/room/:slug", middleware, async (req, res) => { 
     const slug = req.params.slug;
     if (!slug) {
         return res.status(400).json({ message: "Room slug is required" });
@@ -166,6 +178,30 @@ app.post("/ws/token", middleware, (req, res) => {
   const wsToken = jwt.sign({ userId }, JWT_SECRET, { expiresIn: '60s' }); 
   res.json({ wsToken });
 });
+
+app.get("/api/user/rooms",middleware, async (req, res) => {
+  const userId = req.userId;
+
+  if(!userId){
+    return res.status(403).json({message: "Unauthorized"})
+  }
+
+  try {
+    const rooms = await prismaClient.room.findMany({
+      where: {
+        adminId: userId,
+      },
+      orderBy: {
+        createdAt: "desc",
+      },
+    });
+    res.status(200).json(rooms);
+  } catch (error) {
+    console.error("Failed to fetch rooms:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+
+})
 
 app.listen(3005, () => {
   console.log('Server listening on port 3005');

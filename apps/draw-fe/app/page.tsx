@@ -1,12 +1,11 @@
-"use client";
+// No "use client" directive - this is now a Server Component
 
-// The key change is here: We are now importing the Button from our central UI package.
-// This ensures design consistency across your entire Turborepo project.
 import { Button } from "@repo/ui/button"; 
 import { ArrowRight, Sparkles, Pencil, Users, Zap, Lock, Download, Palette, Github, Twitter, Linkedin, LucideIcon } from "lucide-react";
 import heroImage from "@/assets/hero-whiteboard.jpg";
-import Image from "next/image"; // Using Next.js Image component for optimization
+import Image from "next/image";
 import Link from "next/link";
+import { getUserIdFromCookie } from "@/lib/auth"; // 1. Import our server-side auth utility
 
 // For better type safety, we can define the feature type
 interface Feature {
@@ -24,7 +23,13 @@ const features: Feature[] = [
   { icon: Palette, title: "Customizable", description: "Personalize your workspace with custom colors, themes, and tools." }
 ];
 
-const LandingPage = () => {
+
+// 2. The component function is now marked as 'async'
+export default async function LandingPage() {
+  // 3. We 'await' the result from our auth utility to get the user's status
+  const userId = await getUserIdFromCookie();
+  const isLoggedIn = !!userId; // Convert the result to a boolean (true if userId exists, false if null)
+
   return (
     <div className="min-h-screen bg-background text-foreground">
       {/* Hero Section */}
@@ -51,19 +56,31 @@ const LandingPage = () => {
               </p>
               
               <div className="flex flex-col sm:flex-row gap-4 justify-center items-center animate-fade-in-up">
-                {/* === USING OUR SHARED BUTTON === */}
-                <Link href={"/signin"}>
-                <Button className="group text-lg px-8 py-4">
-                  Sign In
-                  <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-                </Button>
-                </Link>
-                {/* === USING OUR SHARED BUTTON WITH STYLE OVERRIDES === */}
-                <Link href={"/signup"}>
-                <Button className="text-lg px-8 py-4 bg-transparent border border-border text-foreground hover:bg-secondary">
-                  Sign Up
-                </Button>
-                </Link>
+                {/* === 4. CONDITIONAL RENDERING LOGIC === */}
+                {isLoggedIn ? (
+                  // If the user is logged in, show a link to their dashboard
+                  <Link href="/dashboard">
+                    <Button className="group text-lg px-8 py-4">
+                      Go to Dashboard
+                      <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                    </Button>
+                  </Link>
+                ) : (
+                  // If the user is NOT logged in, show the Sign In and Sign Up buttons
+                  <>
+                    <Link href="/signin">
+                      <Button className="group text-lg px-8 py-4">
+                        Sign In
+                        <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                      </Button>
+                    </Link>
+                    <Link href="/signup">
+                      <Button className="text-lg px-8 py-4 bg-transparent border border-border text-foreground hover:bg-secondary">
+                        Sign Up
+                      </Button>
+                    </Link>
+                  </>
+                )}
               </div>
             </div>
             
@@ -131,12 +148,12 @@ const LandingPage = () => {
                   Join thousands of creators, teachers, and teams who use our platform to collaborate and create amazing things.
                 </p>
                 <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-                  {/* === USING OUR SHARED BUTTON === */}
-                  <Button className="group text-lg px-8 py-4">
-                    Get Started Free
-                    <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-                  </Button>
-                  {/* === USING OUR SHARED BUTTON WITH STYLE OVERRIDES === */}
+                  <Link href={isLoggedIn ? "/dashboard" : "/signup"}>
+                    <Button className="group text-lg px-8 py-4">
+                      Get Started Free
+                      <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                    </Button>
+                  </Link>
                   <Button 
                     className="text-lg px-8 py-4 bg-white/10 border border-white/20 text-primary-foreground hover:bg-white/20"
                   >
@@ -192,5 +209,3 @@ const LandingPage = () => {
     </div>
   );
 };
-
-export default LandingPage;

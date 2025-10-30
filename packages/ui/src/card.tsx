@@ -12,7 +12,7 @@ export function Card({
   title: string;
   children: React.ReactNode;
   className?: string;
-}): JSX.Element {
+}): React.ReactElement {
   return (
     <div
       className={`w-full max-w-md p-6 sm:p-8 bg-white border border-gray-200 rounded-xl shadow-md ${className}`}
