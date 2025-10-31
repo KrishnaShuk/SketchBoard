@@ -90,7 +90,7 @@ app.post("/signin", async (req, res) => {
 });
 
 app.post("/api/logout", (req, res) => {
-  
+
   res.cookie('authToken', '', {
     httpOnly: true,
     secure: process.env.NODE_ENV === 'production',
@@ -122,7 +122,7 @@ app.post("/room", middleware, async (req, res) => {
            adminId: userId
         }
      });
-     res.status(201).json({ roomId: room.id });
+     res.status(201).json(room);
       
    } catch(e){
       res.status(409).json({
