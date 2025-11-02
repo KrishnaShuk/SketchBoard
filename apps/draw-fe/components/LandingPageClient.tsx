@@ -28,7 +28,6 @@ const Squiggle = () => (
   </svg>
 );
 
-// Define the shape of the component's props
 interface LandingPageClientProps {
   isLoggedIn: boolean;
 }
@@ -54,10 +53,8 @@ export function LandingPageClient({ isLoggedIn }: LandingPageClientProps) {
 
   return (
     <div className="font-sans">
-      {/* Background Grid Pattern */}
       <div className="absolute inset-0 -z-10 h-full w-full bg-background bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px]"></div>
 
-      {/* Hero Section */}
       <section className="container mx-auto px-6 py-24 sm:py-32 text-center">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -97,7 +94,6 @@ export function LandingPageClient({ isLoggedIn }: LandingPageClientProps) {
         </motion.div>
       </section>
 
-      {/* Image Preview Section */}
       <section className="container mx-auto px-6">
         <motion.div
           initial={{ opacity: 0, scale: 0.95 }}
@@ -116,7 +112,6 @@ export function LandingPageClient({ isLoggedIn }: LandingPageClientProps) {
         </motion.div>
       </section>
 
-      {/* Features Section */}
       <section className="container mx-auto px-6 py-24 sm:py-32">
         <div className="max-w-4xl mx-auto text-center">
           <h2 className="text-4xl font-bold font-handwriting">Everything you need. Nothing you don't.</h2>

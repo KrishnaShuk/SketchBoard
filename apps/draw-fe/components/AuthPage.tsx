@@ -67,12 +67,10 @@ export function AuthPage({ isSignin }: { isSignin: boolean }) {
 
   return (
     <div className="relative min-h-screen w-screen flex justify-center items-center bg-background overflow-hidden p-4">
-      {/* Background effects */}
       <div className="absolute inset-0 bg-gradient-radial from-background to-transparent opacity-40" />
       <div className="absolute -top-1/4 -left-20 w-96 h-96 bg-primary/20 rounded-full blur-3xl animate-float" />
       <div className="absolute -bottom-1/4 -right-20 w-96 h-96 bg-accent/20 rounded-full blur-3xl animate-float" style={{ animationDelay: '2s' }} />
 
-      {/* The main "glass" card */}
       <div className="relative z-10 w-full max-w-md p-8 space-y-8 bg-card/80 backdrop-blur-lg border border-border rounded-2xl shadow-xl">
         <div className="text-center">
           <h1 className="text-3xl font-bold text-foreground mb-2">{title}</h1>
@@ -80,7 +78,6 @@ export function AuthPage({ isSignin }: { isSignin: boolean }) {
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-6">
-          {/* Conditionally render the "Name" field only for the signup form */}
           {!isSignin && (
             <div className="space-y-2">
               <Label htmlFor="name" className="font-medium text-muted-foreground">Name</Label>
@@ -125,7 +122,6 @@ export function AuthPage({ isSignin }: { isSignin: boolean }) {
             />
           </div>
 
-          {/* Display error message if it exists */}
           {error && (
             <p className="text-sm text-center text-amber-500">{error}</p>
           )}

@@ -18,17 +18,13 @@ export async function Header() {
         </Link>
         <div className="flex items-center gap-4">
           <ThemeToggle />
-          
-          {/* === CONDITIONAL RENDERING LOGIC === */}
           {isLoggedIn ? (
-            // If the user IS logged in, show a link to their dashboard
             <Link href="/dashboard">
               <Button className="font-sans group bg-primary text-primary-foreground hover:bg-primary/90 hidden sm:flex">
-                Go to Dashboard
+               <span></span> Go to Dashboard <span></span>
               </Button>
             </Link>
           ) : (
-            // If the user is NOT logged in, show the Sign In and Sign Up buttons
             <>
               <Link href="/signin">
                 <Button className="font-sans bg-transparent border border-border text-foreground hover:bg-surface">

@@ -139,7 +139,7 @@ export function CreateRoomModal({ isOpen, onClose, onRoomCreated }: CreateRoomMo
                 className="group bg-primary text-primary-foreground hover:bg-primary/90 shadow-lg shadow-primary/20"
               >
                 Create Board
-                <ArrowRight className="w-4 h-4 ml-2 transition-transform group-hover:translate-x-1" />
+                <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
               </Button>
             </div>
           </form>

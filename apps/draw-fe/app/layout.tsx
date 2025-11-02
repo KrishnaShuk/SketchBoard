@@ -1,17 +1,20 @@
 import type { Metadata } from "next";
-import { Inter, Caveat } from "next/font/google";
+import { Inter, Caveat } from "next/font/google"; // 1. Import Inter and Caveat
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme/ThemeProvider";
 
+// 2. Configure the fonts and assign them to CSS variables
 const inter = Inter({
   subsets: ["latin"],
   variable: "--font-inter",
+  display: 'swap',
 });
 
 const caveat = Caveat({
   subsets: ["latin"],
   variable: "--font-caveat",
   weight: ["400", "700"],
+  display: 'swap',
 });
 
 export const metadata = {
@@ -19,7 +22,6 @@ export const metadata = {
   description: "A free, open-source digital whiteboard for sketching hand-drawn diagrams.",
 };
 
-// This is the ROOT layout. It should only contain providers and root tags.
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -27,14 +29,14 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
+      {/* 3. Apply the font variables to the body tag */}
       <body className={`${inter.variable} ${caveat.variable} font-sans antialiased`}>
         <ThemeProvider
           attribute="class"
-          defaultTheme="system"
+          defaultTheme="dark" // Let's default to dark mode as it's our primary theme
           enableSystem
           disableTransitionOnChange
         >
-          {/* We no longer have a visible header or footer here */}
           {children}
         </ThemeProvider>
       </body>

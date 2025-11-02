@@ -16,11 +16,10 @@ export default async function DashboardLayout({
   }
 
   return (
-    // This div is important to give the layout its own context
     <div className="min-h-screen bg-background font-sans">
       <header className="sticky top-0 z-40 w-full border-b border-border bg-background/80 backdrop-blur-lg">
         <div className="container mx-auto flex h-16 items-center justify-between px-6">
-          <Link href="/dashboard" className="flex items-center gap-2">
+          <Link href="/" className="flex items-center gap-2">
             <h1 className="text-2xl font-bold text-foreground font-handwriting">
               SketchBoard
             </h1>

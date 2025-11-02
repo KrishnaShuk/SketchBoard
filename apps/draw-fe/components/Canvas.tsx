@@ -20,14 +20,10 @@ export function Canvas({
 
     useEffect(() => {
         game?.setTool(selectedTool);
-
-        // This effect handles toggling the custom cursor class on the canvas.
         if (canvasRef.current) {
             if (selectedTool === 'eraser') {
-                // When eraser is selected, add the class to hide the default cursor.
                 canvasRef.current.classList.add('cursor-none');
             } else {
-                // For any other tool, remove the class to show the default cursor.
                 canvasRef.current.classList.remove('cursor-none');
             }
         }
