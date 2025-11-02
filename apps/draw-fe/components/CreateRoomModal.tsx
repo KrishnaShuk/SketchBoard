@@ -1,10 +1,11 @@
 "use client";
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Button } from '@repo/ui/button';
 import { Input } from '@repo/ui/input';
 import { Label } from '@repo/ui/Label';
 import { HTTP_BACKEND } from '@/config';
+import { X, ArrowRight } from 'lucide-react';
 
 type Room = {
   id: number;
@@ -23,13 +24,35 @@ export function CreateRoomModal({ isOpen, onClose, onRoomCreated }: CreateRoomMo
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  useEffect(() => {
+    const handleEsc = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        onClose();
+      }
+    };
+    window.addEventListener('keydown', handleEsc);
+    return () => {
+      window.removeEventListener('keydown', handleEsc);
+    };
+  }, [onClose]);
+
+  useEffect(() => {
+    if (!isOpen) {
+      setTimeout(() => {
+        setRoomName('');
+        setError(null);
+        setIsLoading(false);
+      }, 200); 
+    }
+  }, [isOpen]);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
     setError(null);
 
     if (!roomName.trim()) {
-      setError("Room name cannot be empty.");
+      setError("Please give your board a name.");
       setIsLoading(false);
       return;
     }
@@ -43,13 +66,11 @@ export function CreateRoomModal({ isOpen, onClose, onRoomCreated }: CreateRoomMo
       });
 
       const data: any = await response.json();
-
       if (!response.ok) {
-        throw new Error(data.message || 'Failed to create room. Please try again.');
+        throw new Error(data.message || 'Failed to create board.');
       }
 
       onRoomCreated(data as Room);
-      setRoomName('');
       onClose();
 
     } catch (err: any) {
@@ -63,54 +84,66 @@ export function CreateRoomModal({ isOpen, onClose, onRoomCreated }: CreateRoomMo
     return null;
   }
 
-  const handleBackdropClick = () => {
-    if (isLoading) return;
-    onClose();
-  }
-
   return (
     <div 
-      className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 animate-fade-in"
-      onClick={handleBackdropClick}
+      className="fixed inset-0 z-50 flex items-center justify-center bg-background/80 backdrop-blur-sm"
+      onClick={onClose}
     >
-      <div 
-        className="bg-card rounded-xl p-8 border border-border shadow-xl w-full max-w-md animate-scale-in"
+      <div
+        className="relative w-full max-w-md m-4 bg-surface border border-border rounded-lg shadow-xl"
         onClick={e => e.stopPropagation()}
       >
-        <h2 className="text-2xl font-bold mb-1 text-foreground">Create a New Whiteboard</h2>
-        <p className="text-muted-foreground mb-6">Give your new canvas a name to get started.</p>
-        
-        <form onSubmit={handleSubmit} className="space-y-6">
-          <div className="space-y-2">
-            <Label htmlFor="roomName" className="font-medium text-muted-foreground">Room Name</Label>
-            <Input
-              id="roomName"
-              type="text"
-              placeholder="e.g., Q3 Project Brainstorm"
-              value={roomName}
-              onChange={(e) => setRoomName(e.target.value)}
-              disabled={isLoading}
-              className="py-3 bg-background/50 border-border focus:border-primary"
-              autoFocus
-            />
-          </div>
-          
-          {error && <p className="text-sm text-center text-amber-500">{error}</p>}
-          
-          <div className="flex justify-end gap-4 pt-2">
-            <Button 
-              type="button" 
+        <div className="p-6">
+          <div className="flex justify-between items-center mb-4">
+            <h2 className="text-3xl font-bold">New Whiteboard</h2>
+            <button 
               onClick={onClose} 
-              disabled={isLoading}
-              className="bg-transparent border border-border text-foreground hover:bg-secondary"
+              className="p-1 rounded-full text-muted-foreground hover:bg-border transition-colors"
+              aria-label="Close modal"
             >
-              Cancel
-            </Button>
-            <Button type="submit" isLoading={isLoading} className="bg-gradient-hero">
-              Create Room
-            </Button>
+              <X className="w-5 h-5" />
+            </button>
           </div>
-        </form>
+
+          <p className="mb-6 text-muted-foreground">What would you like to name your new board?</p>
+
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div>
+              <Label htmlFor="roomName" className="font-sans font-medium text-muted-foreground">Board Name</Label>
+              <Input
+                id="roomName"
+                type="text"
+                placeholder="e.g., Q4 Launch Strategy"
+                value={roomName}
+                onChange={(e) => setRoomName(e.target.value)}
+                disabled={isLoading}
+                className="mt-2 w-full font-sans bg-background border-border focus:border-primary focus:ring-primary"
+                autoFocus
+              />
+            </div>
+            
+            {error && <p className="font-sans text-sm text-center text-red-500">{error}</p>}
+            
+            <div className="flex justify-end gap-3 pt-4">
+              <Button 
+                type="button" 
+                onClick={onClose} 
+                disabled={isLoading}
+                className="bg-transparent border border-border text-foreground hover:bg-border"
+              >
+                Cancel
+              </Button>
+              <Button 
+                type="submit" 
+                isLoading={isLoading} 
+                className="group bg-primary text-primary-foreground hover:bg-primary/90 shadow-lg shadow-primary/20"
+              >
+                Create Board
+                <ArrowRight className="w-4 h-4 ml-2 transition-transform group-hover:translate-x-1" />
+              </Button>
+            </div>
+          </form>
+        </div>
       </div>
     </div>
   );

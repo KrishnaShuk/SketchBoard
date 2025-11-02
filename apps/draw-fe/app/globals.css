@@ -1,29 +1,67 @@
+/* Tell Tailwind to use this file as the base layer */
 @import "tailwindcss";
 
- :root {
-  --background: #ffffff;
-  --foreground: #171717;
+/* 
+  PHASE 1: DEFINE THE DESIGN TOKENS (CSS VARIABLES)
+*/
+:root {
+  /* Light Mode Palette */
+  --background: 240 10% 98%;
+  --surface: 0 0% 100%;
+  --border: 240 5% 90%;
+  --border-hover: 240 5% 85%;
+  --foreground: 240 10% 15%;
+  --muted-foreground: 240 5% 45%;
+  --primary: 242 91% 65%;
+  --primary-foreground: 0 0% 100%;
+  --success: 158 84% 40%;
+  --font-sans: var(--font-inter);
+  --font-handwriting: var(--font-caveat);
 }
 
-
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+.dark {
+  /* Dark Mode Palette */
+  --background: 222 47% 11%;
+  --surface: 223 39% 17%;
+  --border: 217 33% 27%;
+  --border-hover: 215 28% 34%;
+  --foreground: 210 40% 98%;
+  --muted-foreground: 215 20% 65%;
+  --primary: 239 88% 80%;
+  --primary-foreground: 222 47% 11%;
+  --success: 145 58% 59%;
 }
 
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+/*
+  PHASE 2: CONFIGURE TAILWIND WITH @theme
+*/
+@theme {
+  --font-sans: var(--font-sans);
+  --font-handwriting: var(--font-handwriting);
+  --color-background: hsl(var(--background));
+  --color-foreground: hsl(var(--foreground));
+  --color-primary: hsl(var(--primary));
+  --color-surface: hsl(var(--surface));
+  --color-border: hsl(var(--border));
 }
 
+/*
+  PHASE 3: APPLY BASE STYLES AND RESETS
+*/
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
-} 
+  @apply bg-background text-foreground;
+  font-feature-settings: 'rlig' 1, 'calt' 1;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  @apply font-handwriting font-bold;
+}
+
+*:focus-visible {
+  @apply outline-none ring-2 ring-offset-2 ring-primary ring-offset-background;
+}
+
+/* THIS IS THE NEW CLASS */
+.cursor-none {
+  cursor: none;
+}
