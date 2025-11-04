@@ -231,7 +231,7 @@ export function LandingPageClient({ isLoggedIn }: { isLoggedIn: boolean }) {
             </Link>
           </div>
           
-          <p className="mt-4 text-sm text-muted-foreground">Free forever. No credit card required.</p>
+          <p className="mt-4 text-sm text-muted-foreground">Free forever.</p>
         </div>
       </section>
     </div>
