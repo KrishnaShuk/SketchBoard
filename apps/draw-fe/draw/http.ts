@@ -1,7 +1,7 @@
 import { HTTP_BACKEND } from "@/config";
 import axios from "axios";
 
-// Define the primitive shape types
+
 type RectShape = {
   type: "rect";
   x: number;
@@ -12,7 +12,7 @@ type RectShape = {
 
 type CircleShape = {
   type: "circle";
-  x: number; // Use top-left corner (x,y) and dimensions for consistency
+  x: number;
   y: number;
   width: number;
   height: number;
@@ -24,10 +24,10 @@ type PencilShape = {
   startY: number;
   endX: number;
   endY: number;
-  strokeId: string; // <-- This is now a mandatory string property
+  strokeId: string; 
 };
 
-// The main Shape type now includes a mandatory 'id' and the updated PencilShape
+
 export type Shape = {
   id: string;
 } & (RectShape | CircleShape | PencilShape);
@@ -53,6 +53,6 @@ export async function getExistingShapes(roomId: string): Promise<Shape[]> {
     return shapes;
   } catch (error) {
     console.error("Failed to get existing shapes:", error);
-    return []; // Return an empty array on failure
+    return []; 
   }
 }

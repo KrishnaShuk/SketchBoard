@@ -279,7 +279,7 @@ export class Game {
         this.socket.send(JSON.stringify({ type: "chat", message: JSON.stringify({ shape }), roomId: this.roomId }));
     }
 
-    // --- Utility Methods ---
+
     private isPointNearLine(point: {x: number, y: number}, x1: number, y1: number, x2: number, y2: number, threshold: number): boolean {
         const dx = x2 - x1;
         const dy = y2 - y1;

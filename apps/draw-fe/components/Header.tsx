@@ -1,9 +1,9 @@
 import Link from 'next/link';
 import { Button } from '@repo/ui/button';
 import { ThemeToggle } from './theme/ThemeToggle';
-import { getUserIdFromCookie } from '@/lib/auth'; // Import our server-side auth utility
+import { getUserIdFromCookie } from '@/lib/auth'; 
 
-// Make the component async to perform server-side checks
+
 export async function Header() {
   const userId = await getUserIdFromCookie();
   const isLoggedIn = !!userId;
