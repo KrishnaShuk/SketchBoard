@@ -1,9 +1,8 @@
 import type { Metadata } from "next";
-import { Inter, Caveat } from "next/font/google"; // 1. Import Inter and Caveat
+import { Inter, Caveat } from "next/font/google"; 
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme/ThemeProvider";
 
-// 2. Configure the fonts and assign them to CSS variables
 const inter = Inter({
   subsets: ["latin"],
   variable: "--font-inter",
@@ -29,11 +28,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      {/* 3. Apply the font variables to the body tag */}
       <body className={`${inter.variable} ${caveat.variable} font-sans antialiased`}>
         <ThemeProvider
           attribute="class"
-          defaultTheme="dark" // Let's default to dark mode as it's our primary theme
+          defaultTheme="dark" 
           enableSystem
           disableTransitionOnChange
         >
